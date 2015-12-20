@@ -2,18 +2,18 @@
 Night and Day : Automatic desktop color changer
 Copyright (C) 1998-1999 Jean-Baptiste M. Queru
 
-This program is free software; you can redistribute it and/or 
-modify it under the terms of the GNU General Public License 
-as published by the Free Software Foundation; either version 2 
-of the License, or (at your option) any later version. 
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, 
-but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-GNU General Public License for more details. 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License 
-along with this program; if not, write to the Free Software 
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Contact the author at:
@@ -21,7 +21,6 @@ Jean-Baptiste M. Queru, 1706 Marina Ct #B, San Mateo, CA 94403, USA
 or by e-mail at : djaybee@cyberdude.com
 */
 
-#include "nd.h"
 #include <Application.h>
 #include <Window.h>
 #include <View.h>
@@ -40,6 +39,8 @@ or by e-mail at : djaybee@cyberdude.com
 #include <File.h>
 #include <Screen.h>
 #include <FindDirectory.h>
+
+#include <cmath>
 
 const int numlang=3;
 
@@ -429,7 +430,7 @@ DKMainWindow::DKMainWindow():BWindow(BRect(100,100,471,365),text[0][language],B_
 
 	uchar* fb;
 	int ll;
-	
+
 	for (int n=0;n<3;n++) {
 		fb=(uchar*)ColorRamp[n][0]->Bits();
 		ll=ColorRamp[n][0]->BytesPerRow();
@@ -1054,7 +1055,7 @@ void DKScreenView::AttachedToWindow() {
 	langitem.mitem12=mitem=new BMenuItem(text[12][language],new BMessage(B_QUIT_REQUESTED));
 	mitem->SetTarget(be_app);
 	menu->AddItem(mitem);
-	
+
 	BScreen s;
 	SetViewColor(s.DesktopColor());
 }
@@ -1114,7 +1115,7 @@ long dkthread(void*) {
 			time_t thetime;
 			time(&thetime);
 			struct tm *lcltime=localtime(&thetime);
-			float phi=(lcltime->tm_hour*3600+lcltime->tm_min*60+lcltime->tm_sec)*(2*PI/86400);
+			float phi=(lcltime->tm_hour*3600+lcltime->tm_min*60+lcltime->tm_sec)*(2*M_PI/86400);
 			float p=(1-cos(phi));
 			if (sin(phi)>=0) {
 				if (p<1) {
@@ -1218,7 +1219,7 @@ long bitmapthread(void*) {
 			uint32 ll32=PreviewRamp[3]->BytesPerRow();
 			for (int i=0;i<=337;i++) {
 				rgb_color c;
-				float phi=2*PI*i/338;
+				float phi=2*M_PI*i/338;
 				float p=(1-cos(phi));
 				if (sin(phi)>=0) {
 					if (p<1) {
@@ -1272,5 +1273,5 @@ long bitmapthread(void*) {
 		} while (data_avail);
 		thr_running=false;
 		release_sem(bdsem);
-	}	
+	}
 }
